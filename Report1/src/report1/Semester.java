@@ -5,8 +5,11 @@
 package report1;
 
 import java.io.BufferedReader;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.StringTokenizer;
 
@@ -14,7 +17,7 @@ import java.util.StringTokenizer;
  *
  * @author ASUS
  */
-public class Semester implements Comparable<Semester> {
+public class Semester implements Comparable<Semester>, Serializable {
 
 // <editor-fold desc="Private Data Members">
 
@@ -104,7 +107,7 @@ public class Semester implements Comparable<Semester> {
     
 // <editor-fold desc="Text File IO">
     
-    public void fileWrite(PrintWriter writer)
+    public void textFileWrite(PrintWriter writer)
     {
         StringBuilder Temp = new StringBuilder();
         Temp.append(semesterNumber);
@@ -115,13 +118,33 @@ public class Semester implements Comparable<Semester> {
         writer.println(Temp.toString());
     }
     
-    public static Semester fileRead(BufferedReader reader) throws IOException
+    public static Semester textFileRead(BufferedReader reader) throws IOException
     {
         Semester Temp = new Semester();
         StringTokenizer T = new StringTokenizer(reader.readLine(), "\t");
         Temp.semesterNumber = new Integer(T.nextToken());
         Temp.year = new Integer(T.nextToken());
         Temp.endDate = new Date(new Long(T.nextToken()));
+        return Temp;
+    }
+    
+// </editor-fold>
+    
+// <editor-fold desc="Binary File IO">
+    
+    public void binaryFileWrite(DataOutputStream writer) throws IOException
+    {
+        writer.writeInt(semesterNumber);
+        writer.writeInt(year);
+        writer.writeLong(endDate.getTime());
+    }
+    
+    public static Semester binaryFileRead(DataInputStream reader) throws IOException
+    {
+        Semester Temp = new Semester();
+        Temp.semesterNumber = reader.readInt();
+        Temp.year = reader.readInt();
+        Temp.endDate = new Date(reader.readLong());
         return Temp;
     }
     
